@@ -3,6 +3,7 @@ import time
 import random
 import pygame
 import os
+pygame.font.init()
 
 WIDTH = 480
 HEIGHT = 800
@@ -17,6 +18,7 @@ pygame.transform.scale2x(pygame.image.load(os.path.join("Assets","bird3.png")))]
 BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join("Assets","bg.png")))
 PIPE = pygame.transform.scale2x(pygame.image.load(os.path.join("Assets","pipe.png")))
 GROUND = pygame.transform.scale2x(pygame.image.load(os.path.join("Assets","base.png")))
+FONT = pygame.font.SysFont("arial", 30)
 
 class Pipe:
     PIPE_GAP = 200
@@ -158,11 +160,14 @@ class Bird:
     def get_mask(self):
         return pygame.mask.from_surface(self.img)
 
-def draw_window(window, bird, pipes, ground):
+def draw_window(window, bird, pipes, ground, score):
     window.blit(BACKGROUND,(0,0)) #Drawing the background
 
     for pipe in pipes:
         pipe.draw(window)
+
+    text = FONT.render("Score:" + str(score), 1, (255,255,255))
+    window.blit(text,(WIDTH - 10 - text.get_width(),10))
 
     ground.draw(window)
     bird.draw(window)
@@ -171,7 +176,7 @@ def draw_window(window, bird, pipes, ground):
 def main():
     bird = Bird(210,320)
     ground = Ground(730)
-    pipes = [Pipe(700)]
+    pipes = [Pipe(480)]
 
     window = pygame.display.set_mode((WIDTH,HEIGHT))
     clock = pygame.time.Clock()
@@ -204,14 +209,17 @@ def main():
 
         if add_pipe:
             score+=1
-            pipes.append(Pipe(700))
+            pipes.append(Pipe(480))
 
         for i in removed:
             pipes.remove(i)
 
+        if bird.y + bird.img.get_height() >= 730:
+            pass
+
         ground.move()
 
-        draw_window(window, bird, pipes, ground)
+        draw_window(window, bird, pipes, ground,score)
 
     pygame.quit()
     quit()

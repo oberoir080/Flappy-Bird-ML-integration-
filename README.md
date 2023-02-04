@@ -10,20 +10,15 @@ This code is a Flappy Bird clone game implemented in Python using Pygame library
 
 # Table of Contents
 
-1. [Classes](#classes)
-	a. [Bird Class](#birdclass)
-	b. [Pipe Class](#pipeclass)
-	c. [Ground Class](#groundclass)
-	
-2.
-
-3.
+1. [Classes](#classes) 
+    1. [Bird Class](#birdclass)
+    2. [Pipe Class](#pipeclass) 
+    3. [Ground Class](#groundclass)
 
   
 
-## Classes: <a name="classes"></a>
-
-+ # Bird Class <a name="birdclass"></a>
+# Classes <a name="classes"></a>
+## Bird Class <a name="birdclass"></a>
 
 - **init(self, x, y):** This is the constructor method of the class, which is called when a new instance of the class is created. It takes the x and y position of the bird as input and initializes the bird's attributes such as its position, tilt, tick count, velocity, height, animation count, and the default image.
 
@@ -39,7 +34,7 @@ This code is a Flappy Bird clone game implemented in Python using Pygame library
 
   
 
-+ # Pipe Class <a name="pipeclass"></a>
+## Pipe Class <a name="pipeclass"></a>
 
 - **init(self,x):** This is the constructor method for the class. It sets the initial values for the attributes of the class such as position and height of the pipe.
 
@@ -53,7 +48,7 @@ This code is a Flappy Bird clone game implemented in Python using Pygame library
 
   
 
-+ # Ground Class <a name="groundclass"></a>
+## Ground Class <a name="groundclass"></a>
 
 - **init(self,y):** This is the constructor method and is called when an object of the ground class is created. It sets up the initial properties of the ground object such as its position.
 

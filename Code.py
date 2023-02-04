@@ -8,6 +8,8 @@ pygame.font.init()
 WIDTH = 480
 HEIGHT = 800
 
+GEN = 0
+
 
 os.chdir(os.path.dirname(os.path.abspath(__file__))) #Changing the directory to current working directory
 
@@ -160,7 +162,7 @@ class Bird:
     def get_mask(self):
         return pygame.mask.from_surface(self.img)
 
-def draw_window(window, bird, pipes, ground, score):
+def draw_window(window, birds, pipes, ground, score, gen):
     window.blit(BACKGROUND,(0,0)) #Drawing the background
 
     for pipe in pipes:
@@ -169,14 +171,32 @@ def draw_window(window, bird, pipes, ground, score):
     text = FONT.render("Score:" + str(score), 1, (255,255,255))
     window.blit(text,(WIDTH - 10 - text.get_width(),10))
 
+    gentext = FONT.render("Gen:" + str(gen), 1, (255,255,255))
+    window.blit(gentext,(10 ,10))
+
+    for bird in birds:
+        bird.draw(window)
+
     ground.draw(window)
-    bird.draw(window)
+    
     pygame.display.update() #Updating for each frame
 
-def main():
-    bird = Bird(210,320)
+def main(genomes, config):
+    global GEN
+    GEN +=1
+    nets = []
+    ge = []
+    birds = []
     ground = Ground(730)
     pipes = [Pipe(480)]
+
+    for _,i in genomes:
+        net = neat.nn.FeedForwardNetwork.create(i,config)
+        nets.append(net)
+        birds.append(Bird(210,320))
+        i.fitness = 0
+        ge.append(i)
+
 
     window = pygame.display.set_mode((WIDTH,HEIGHT))
     clock = pygame.time.Clock()
@@ -190,40 +210,78 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run=False
+                pygame.quit()
+                quit()
 
-        # bird.move()
+        pipe_index = 0
+        if len(birds) > 0:
+            if len(pipes) > 1 and birds[0].x > pipes[0].x + pipes[0].UPPER_PIPE.get_width():
+                pipe_index = 1
+        else:
+            run = False
+            break
+
+        for i, bird in enumerate(birds):
+            bird.move()
+            ge[i].fitness += 0.1
+
+            output = nets[i].activate((bird.y,abs(bird.y - pipes[pipe_index].height), abs(bird.y - pipes[pipe_index].bottom)))
+
+            if output[0] > 0.5:
+                bird.jump()
+
         add_pipe = False
         removed = []
         for pipe in pipes:
-            if pipe.collide(bird):
-                pass
+            for i,bird in enumerate(birds):
+                if pipe.collide(bird):
+                    ge[i].fitness -= 1
+                    birds.pop(i)
+                    nets.pop(i)
+                    ge.pop(i)
+                    
+
+                if not pipe.passed and pipe.x < bird.x:
+                    pipe.passed = True
+                    add_pipe = True
 
             if pipe.x + pipe.UPPER_PIPE.get_width() < 0:
                 removed.append(pipe)
-
-            if not pipe.passed and pipe.x < bird.x:
-                pipe.passed = True
-                add_pipe = True
 
             pipe.move()
 
         if add_pipe:
             score+=1
+            for i in ge:
+                i.fitness += 5
             pipes.append(Pipe(480))
 
         for i in removed:
             pipes.remove(i)
 
-        if bird.y + bird.img.get_height() >= 730:
-            pass
+        for i,bird in enumerate(birds):
+            if bird.y + bird.img.get_height() >= 730 or bird.y < 0:
+                birds.pop(i)
+                nets.pop(i)
+                ge.pop(i)
 
         ground.move()
-
-        draw_window(window, bird, pipes, ground,score)
-
-    pygame.quit()
-    quit()
-
-main()
-
         
+        draw_window(window, birds, pipes, ground,score, GEN)
+
+
+def run(config_file):
+    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                neat.DefaultSpeciesSet, neat.DefaultStagnation, config_file)
+
+    population = neat.Population(config)
+
+    population.add_reporter(neat.StdOutReporter(True)) #Detailed view of stats
+    stats = neat.StatisticsReporter()
+    population.add_reporter(stats)
+
+    winner = population.run(main,50)
+
+if __name__ == "__main__":
+    config_file = os.path.join("neat_config.txt")
+    run(config_file)

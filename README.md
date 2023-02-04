@@ -20,7 +20,7 @@ This code is a Flappy Bird clone game implemented in Python using Pygame library
 
 + # Ground Class
     - **init(self,y):** This is the constructor method and is called when an object of the ground class is created. It sets up the initial properties of the ground object such as its position.
-    - **move(self):** move: This function updates the position of the ground on the screen. It takes the speed at which the ground should move as an argument, and updates the x-coordinate of the ground object to simulate movement.
+    - **move(self):** This function updates the position of the ground on the screen. It takes the speed at which the ground should move as an argument, and updates the x-coordinate of the ground object to simulate movement.
     - **draw(self,window):** This function draws the ground on the screen. 
         - *Why is it creating two grounds?* Because once the first sprite is off the screen (that is its x coordinate is less than 0), it gets reset and is added just behind the other ground sprite. This makes it look like the bird is moving forward, however it's the whole terrain that is moving and not the bird. 
 

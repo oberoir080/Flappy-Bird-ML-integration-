@@ -13,7 +13,7 @@ GEN = 0
 
 os.chdir(os.path.dirname(os.path.abspath(__file__))) #Changing the directory to current working directory
 
-BIRD = [pygame.transform.scale2x(pygame.image.load(os.path.join("Assets","bird1.png"))),
+BIRD = [pygame.transform.scale2x(pygame.image.load(os.path.join("Assets","bird1.png"))), #Loading up the images
 pygame.transform.scale2x(pygame.image.load(os.path.join("Assets","bird2.png"))),
 pygame.transform.scale2x(pygame.image.load(os.path.join("Assets","bird3.png")))]
 
@@ -23,8 +23,8 @@ GROUND = pygame.transform.scale2x(pygame.image.load(os.path.join("Assets","base.
 FONT = pygame.font.SysFont("arial", 30)
 
 class Pipe:
-    PIPE_GAP = 200
-    TERRAIN_VELOCITY = 5
+    PIPE_GAP = 200 #Defining the gap between the pipes  
+    TERRAIN_VELOCITY = 5 #Defining the velocity of the terrain (This is the speed at which the terrain moves towards the left hand side)
 
     def __init__(self,x):
         self.x = x
@@ -32,33 +32,33 @@ class Pipe:
 
         self.top = 0
         self.bottom = 0
-        self.UPPER_PIPE = pygame.transform.flip(PIPE, False,True)
+        self.UPPER_PIPE = pygame.transform.flip(PIPE, False,True) #Flipping the image 
         self.BELOW_PIPE = PIPE
 
         self.passed = False 
         self.set_height()
 
     def set_height(self):
-        self.height = random.randrange(50,450)
-        self.top =  self.height - self.UPPER_PIPE.get_height()
-        self.bottom = self.height + self.PIPE_GAP
+        self.height = random.randrange(50,450) #The height of the pipe is randomly generated using this random function between the range(50,450)
+        self.top =  self.height - self.UPPER_PIPE.get_height() #The height of the upper pipe is stored in self.top (The value is subtracted because in pygame y increases with negative values)
+        self.bottom = self.height + self.PIPE_GAP #The height of the pipe below is determined by adding (that is decreasing the y axis by PIPE_GAP) self.PIPE_GAP
 
     def move(self):
         self.x -= self.TERRAIN_VELOCITY
 
-    def draw(self,window):
+    def draw(self,window):  
         window.blit(self.UPPER_PIPE, (self.x ,self.top))
         window.blit(self.BELOW_PIPE, (self.x, self.bottom))
 
     def collide(self, bird):
-        bird_mask = bird.get_mask()
-        upper_mask = pygame.mask.from_surface(self.UPPER_PIPE)
+        bird_mask = bird.get_mask()  #Calling the bird's hitbox 
+        upper_mask = pygame.mask.from_surface(self.UPPER_PIPE) 
         below_mask = pygame.mask.from_surface(self.BELOW_PIPE)
 
         upper_offset = (self.x - bird.x, self.top - round(bird.y))
         below_offset = (self.x - bird.x, self.bottom - round(bird.y))
 
-        point_of_collision_upper = bird_mask.overlap(upper_mask, upper_offset)
+        point_of_collision_upper = bird_mask.overlap(upper_mask, upper_offset) #If the hitbox of the bird and pipe overlap, it means there is a collision
         point_of_collision_below = bird_mask.overlap(below_mask, below_offset)
 
         if point_of_collision_upper or point_of_collision_below:
@@ -91,9 +91,9 @@ class Ground:
         window.blit(GROUND, (self.x2, self.y))
         
 class Bird:
-    MAX_ROTATION = 25
-    ROTATION_VELOCITY = 20
-    ANIMATION_TIME = 5
+    MAX_ROTATION = 25  #Once the bird jumps, it can tilt by 25 units (above or below)
+    ROTATION_VELOCITY = 20  #Speed at which the bird rotates
+    ANIMATION_TIME = 5  
 
     def __init__(self,x,y):
         self.x = x  #Spawning coordinates of the bird
@@ -160,24 +160,24 @@ class Bird:
         window.blit(rotated_image,new_rect.topleft)
         
     def get_mask(self):
-        return pygame.mask.from_surface(self.img)
+        return pygame.mask.from_surface(self.img) #Creating the mask of the bird
 
 def draw_window(window, birds, pipes, ground, score, gen):
     window.blit(BACKGROUND,(0,0)) #Drawing the background
 
     for pipe in pipes:
-        pipe.draw(window)
+        pipe.draw(window) #Drawing the pipes
 
-    text = FONT.render("Score:" + str(score), 1, (255,255,255))
-    window.blit(text,(WIDTH - 10 - text.get_width(),10))
+    text = FONT.render("Score:" + str(score), 1, (255,255,255))  #Rendering the score, anti-aliasing=1, 255,255,255 is white colour
+    window.blit(text,(WIDTH - 10 - text.get_width(),10)) #Drawing the text at the (x,y) coordinates
 
-    gentext = FONT.render("Gen:" + str(gen), 1, (255,255,255))
+    gentext = FONT.render("Gen:" + str(gen), 1, (255,255,255)) 
     window.blit(gentext,(10 ,10))
 
-    for bird in birds:
+    for bird in birds: #Drawing the birds
         bird.draw(window)
 
-    ground.draw(window)
+    ground.draw(window)  #Drawing the ground
     
     pygame.display.update() #Updating for each frame
 
@@ -205,9 +205,10 @@ def main(genomes, config):
 
     run = True
     
-    while run:
+    while run:  #This is the main game loop
         clock.tick(30) #30 frames per second
-        for event in pygame.event.get():
+
+        for event in pygame.event.get(): #This loop is used to quit the game
             if event.type == pygame.QUIT:
                 run=False
                 pygame.quit()
@@ -223,9 +224,10 @@ def main(genomes, config):
 
         for i, bird in enumerate(birds):
             bird.move()
-            ge[i].fitness += 0.1
+            ge[i].fitness += 0.1 
 
-            output = nets[i].activate((bird.y,abs(bird.y - pipes[pipe_index].height), abs(bird.y - pipes[pipe_index].bottom)))
+            #This is acting as an input to the neural network as a tuple of 3 values and based on the output it decides whether the bird should jump or not
+            output = nets[i].activate((bird.y,abs(bird.y - pipes[pipe_index].height), abs(bird.y - pipes[pipe_index].bottom))) 
 
             if output[0] > 0.5:
                 bird.jump()
@@ -235,14 +237,14 @@ def main(genomes, config):
         for pipe in pipes:
             for i,bird in enumerate(birds):
                 if pipe.collide(bird):
-                    ge[i].fitness -= 1
-                    birds.pop(i)
-                    nets.pop(i)
-                    ge.pop(i)
+                    ge[i].fitness -= 1 #If the bird collides with the pipe, the fitness of that mutation should decrease
+                    birds.pop(i) #Remove the bird if it collides from the array
+                    nets.pop(i) #Remove the instance of neural network from the array
+                    ge.pop(i) #Remove the state of that bird so that better population of bird can be generated in the next generations
                     
 
-                if not pipe.passed and pipe.x < bird.x:
-                    pipe.passed = True
+                if not pipe.passed and pipe.x < bird.x: #If the pipe has not been passed by the bird and the x coordinate of the bird is less than
+                    pipe.passed = True                  #the x coordinate of the pipe then generate another pipe
                     add_pipe = True
 
             if pipe.x + pipe.UPPER_PIPE.get_width() < 0:
@@ -250,17 +252,17 @@ def main(genomes, config):
 
             pipe.move()
 
-        if add_pipe:
+        if add_pipe: #This condition is satisfied when the bird passes the pipe and is awarded with +5 fitness and the score is increased by 1
             score+=1
             for i in ge:
                 i.fitness += 5
-            pipes.append(Pipe(480))
+            pipes.append(Pipe(480)) #Add another pipe to be generated 
 
         for i in removed:
             pipes.remove(i)
 
         for i,bird in enumerate(birds):
-            if bird.y + bird.img.get_height() >= 730 or bird.y < 0:
+            if bird.y + bird.img.get_height() >= 730 or bird.y < 0:  #If the bird touches the top of the screen or the ground then remove it
                 birds.pop(i)
                 nets.pop(i)
                 ge.pop(i)

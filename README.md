@@ -14,6 +14,8 @@ This code is a Flappy Bird clone game implemented in Python using Pygame library
     1. [Bird Class](#birdclass)
     2. [Pipe Class](#pipeclass) 
     3. [Ground Class](#groundclass)
+2. [NEAT File](#neatfile)
+    1. [NEAT](#neat) 
 
   
 
@@ -57,3 +59,30 @@ This code is a Flappy Bird clone game implemented in Python using Pygame library
 - **draw(self,window):** This function draws the ground on the screen.
 
 - *Why is it creating two grounds?* Because once the first sprite is off the screen (that is its x coordinate is less than 0), it gets reset and is added just behind the other ground sprite. This makes it look like the bird is moving forward, however it's the whole terrain that is moving and not the bird.
+
+
+
+## NEAT File <a name="neatclass"></a> 
+### NEAT <a name="neat"></a>
+
+- **fitness_criterion:** Criterion for measuring the fitness of a network {The higher this value, the better is the bird performing}
+- **fitness_threshold:** Minimum fitness required for termination {The neural network should be able to progress further without any problems}
+- **pop_size:** Size of the population of networks {The number of birds that we start with}
+- **reset_on_extinction:** Determines whether to reset the population when all networks go extinct {We don't want this as we want to train the neural network on the previous population of the bird}
+
+## Acknowledgements
+
+*P.S I haven't fiddled around with the other values in the neat_config file, and tried to understand as much as I can by watching the tutorials of TechWithTim and the NEAT documentation*
+
+ - [TechWithTim's Tutorial Playlist](https://www.youtube.com/playlist?list=PLzMcBGfZo4-lwGZWXz5Qgta_YNX3_vLS2s)
+ - [NEAT Documentation](https://neat-python.readthedocs.io/en/latest/config_file.html)
+ 
+ 
+## Screenshot
+
+![App Screenshot](/Assets/Picture1.png)
+
+
+
+
+ 

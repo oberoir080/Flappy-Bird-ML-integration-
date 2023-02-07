@@ -15,7 +15,12 @@ This code is a Flappy Bird clone game implemented in Python using Pygame library
     2. [Pipe Class](#pipeclass) 
     3. [Ground Class](#groundclass)
 2. [NEAT File](#neatfile)
-    1. [NEAT](#neat) 
+    1. [NEAT](#neat)
+3. Future Implementations
+    1. Adding a UI.
+    2. Adding option to either play or watch the model learn.
+    3. Adding a gamemode where the Player has to beat the score set by the model.
+    4. Adding enemies in the game which shoot small projectiles towards the bird and the bird can either dodge or shoot back at the enemies. (Subject to change) 
 
   
 
@@ -78,9 +83,10 @@ This code is a Flappy Bird clone game implemented in Python using Pygame library
  - [NEAT Documentation](https://neat-python.readthedocs.io/en/latest/config_file.html)
  
  
-## Screenshot
+## Screenshots
 
 ![App Screenshot](/Assets/Picture1.png)
+![App Screenshot](/Assets/Picture2.png)
 
 
 

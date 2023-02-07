@@ -62,7 +62,7 @@ This code is a Flappy Bird clone game implemented in Python using Pygame library
 
 
 
-## NEAT File <a name="neatclass"></a> 
+## NEAT File <a name="neatfile"></a> 
 ### NEAT <a name="neat"></a>
 
 - **fitness_criterion:** Criterion for measuring the fitness of a network {The higher this value, the better is the bird performing}
